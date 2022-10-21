@@ -955,7 +955,7 @@ preserveAspectRatio="xMinYMin slice" xmlns="http://www.w3.org/2000/svg" @click="
 </template>
 
 <script setup>
-  import { defineEmits, defineProps } from 'vue'
+  import { defineEmits, defineProps, watch } from 'vue'
 
   const emit = defineEmits(['onCountryClick'])
 
@@ -968,7 +968,7 @@ preserveAspectRatio="xMinYMin slice" xmlns="http://www.w3.org/2000/svg" @click="
     if(target.id == 'country-map') return
 
     const countries = document.querySelectorAll('#country-map path')
-    console.warn(typeof countries)
+
     countries.forEach((c) => c.classList.remove('activeCountry'))
 
     if(id) target.classList.add('activeCountry')
@@ -986,9 +986,17 @@ preserveAspectRatio="xMinYMin slice" xmlns="http://www.w3.org/2000/svg" @click="
     emit('onCountryClick', countryCode)
   }
 
-  // watch(props.activeCountry, newValue => {
-  //   alert('mateja')
-  // })
+  watch(props, newValue => {
+    const selectedCountryCode = newValue.activeCountry
+    const countries = document.querySelectorAll('#country-map path')
+
+    countries.forEach((c) => {
+      c.classList.remove('activeCountry')
+      if(c.dataset.country == selectedCountryCode || c.id == selectedCountryCode) {
+        c.classList.add('activeCountry')
+      }
+    })
+  })
   
 </script>
 

@@ -6,15 +6,20 @@
       <p class="text-center text-sm mb-10">
         {{ activeCountry ? activeCountry.flag + " " + activeCountry.name.common : "No country selected" }}
       </p>
+      <UIToggleSwitch
+        :isOpen="isCountryPickerOpen"
+        @isToggled="selectListViewToggled"
+      />
       <CountryPicker
+        v-show="isCountryPickerOpen"
         :countryNames="listOfCountries"
+        :activeCountry="activeCountry?.cca2"
         @changeValue="handleChange"
       />
-      <!-- TODO add to map -->
-      <!-- :activeCountry="activeCountry.cca2"-->
       <Map
         @onCountryClick="handleClick"
         :class="{active : activeCountry}"
+        :activeCountry="activeCountry?.cca2"
       />
     </div>
     <CountryInfo
@@ -28,6 +33,7 @@ import { onBeforeMount, ref } from "vue"
 
   const listOfCountries = ref(null)
   const activeCountry = ref(null)
+  const isCountryPickerOpen = ref(false)
   let isError = ref(false)
   let errorMsg = ref(null)
 
@@ -59,6 +65,10 @@ import { onBeforeMount, ref } from "vue"
 
   const handleChange = (selectInputValue) => {
     activeCountry.value = listOfCountries.value.find(country => country.cca2 == selectInputValue)
+  }
+
+  const selectListViewToggled = () => {
+    isCountryPickerOpen.value = !isCountryPickerOpen.value
   }
 
   // populate list of countries
